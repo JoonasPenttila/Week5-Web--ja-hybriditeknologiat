@@ -1,62 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { View, Text, TextInput, Button, FlatList, StyleSheet } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import TaskItem from './components/TaskItem';
-
-type Task = {
-  id: string;
-  text: string;
-  done: boolean;
-};
+import { useTodos } from './hooks/useTodos';
 
 export default function App() {
-  const [tasks, setTasks] = useState<Task[]>([]);
+  const { tasks, addTask, toggleTask } = useTodos();
   const [input, setInput] = useState('');
 
-  useEffect(() => {
-    loadTasks();
-  }, []);
-
-  useEffect(() => {
-    saveTasks();
-  }, [tasks]);
-
-  const loadTasks = async () => {
-    try {
-      const json = await AsyncStorage.getItem('tasks');
-      if (json) {
-        setTasks(JSON.parse(json));
-      }
-    } catch (e) {
-      console.log('Error loading tasks', e);
-    }
-  };
-
-  const saveTasks = async () => {
-    try {
-      await AsyncStorage.setItem('tasks', JSON.stringify(tasks));
-    } catch (e) {
-      console.log('Error saving tasks', e);
-    }
-  };
-
-  const addTask = () => {
-    if (!input.trim()) return;
-
-    const newTask: Task = {
-      id: Date.now().toString(),
-      text: input.trim(),
-      done: false,
-    };
-
-    setTasks([...tasks, newTask]);
+  const handleAdd = () => {
+    addTask(input);
     setInput('');
-  };
-
-  const toggleTask = (id: string) => {
-    setTasks(tasks.map(t =>
-      t.id === id ? { ...t, done: !t.done } : t
-    ));
   };
 
   return (
@@ -70,7 +23,7 @@ export default function App() {
         onChangeText={setInput}
       />
 
-      <Button title="Save" onPress={addTask} />
+      <Button title="Save" onPress={handleAdd} />
 
       <FlatList
         data={tasks}

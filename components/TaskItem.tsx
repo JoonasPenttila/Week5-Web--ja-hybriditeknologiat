@@ -24,11 +24,11 @@ const styles = StyleSheet.create({
   row: {
     paddingVertical: 12,
     borderBottomWidth: 1,
-    borderColor: '#000', // musta viiva
+    borderColor: '#000',
   },
   text: {
     fontSize: 18,
-    color: '#000', // musta teksti
+    color: '#000',
   },
   done: {
     textDecorationLine: 'line-through',
